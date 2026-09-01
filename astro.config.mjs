@@ -8,22 +8,4 @@ export default defineConfig({
   devToolbar: { enabled: false },
   server: { port: 4321, host: true },
   integrations: [react(), uno()],
-  vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            three: ['three', '@react-three/fiber', '@react-three/drei'],
-            codemirror: [
-              'codemirror',
-              '@codemirror/lang-javascript',
-              '@codemirror/lang-html',
-              '@codemirror/lang-css',
-              '@codemirror/theme-one-dark',
-            ],
-          },
-        },
-      },
-    },
-  },
 });

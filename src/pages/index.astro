@@ -1,46 +1,27 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import CursorGlow from '@/components/landing/CursorGlow';
-import HeroScene from '@/components/landing/HeroScene';
-import ParticleField from '@/components/landing/ParticleField';
-import TextReveal from '@/components/landing/TextReveal';
-import ScrollShowcase from '@/components/landing/ScrollShowcase';
-import ShaderBlob from '@/components/landing/ShaderBlob';
+import CursorSpotlight from '@/components/landing/CursorSpotlight';
+import HeroInteractive from '@/components/landing/HeroInteractive';
+import InteractiveBento from '@/components/landing/InteractiveBento';
+import DemoShowcase from '@/components/landing/DemoShowcase';
+import TelemetrySection from '@/components/landing/TelemetrySection';
 ---
 
-<BaseLayout title="Creative Lab" description="Personal creative portfolio">
-  <CursorGlow client:load />
+<BaseLayout title="HANQIN // LAB · Creative Design Engineering" description="Personal interactive design engineering portfolio and micro-interactions laboratory by Hanqin.">
+  <CursorSpotlight client:load />
 
-  <main>
-    <HeroScene client:load />
+  <main class="w-full overflow-hidden">
+    <!-- 2D Kinetic Hero with Live Interactive Design Dock -->
+    <HeroInteractive client:load />
 
-    <ParticleField client:visible />
+    <!-- 5 Interactive Bento Experiments -->
+    <InteractiveBento client:visible />
 
-    <TextReveal client:visible text="探索无限可能" />
+    <!-- Demos Gallery with In-Card Playgrounds -->
+    <DemoShowcase client:visible />
 
-    <ScrollShowcase client:visible />
-
-    <ShaderBlob client:visible />
-
-    <section
-      class="py-32 section-container relative overflow-hidden flex flex-col items-center justify-center text-center"
-    >
-      <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[100px] -z-10 pointer-events-none"
-      >
-      </div>
-
-      <h2 class="heading-2 mb-6">想看更多？</h2>
-      <p class="text-text-secondary text-lg max-w-xl mx-auto mb-10">
-        发现更多交互实验、WebGL 渲染和前端创新实现。
-      </p>
-
-      <a
-        href="/demos"
-        class="inline-flex items-center px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-white font-medium hover:glow-md transition-all hover:scale-105"
-      >
-        探索 Demo 画廊 &rarr;
-      </a>
-    </section>
+    <!-- Architecture Telemetry & Kinetic Infinite Marquee -->
+    <TelemetrySection client:visible />
   </main>
 </BaseLayout>
+

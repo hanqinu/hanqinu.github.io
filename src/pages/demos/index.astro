@@ -4,24 +4,29 @@ import DemoCard from '@/components/ui/DemoCard.astro';
 import { demos } from '@/data/demos';
 ---
 
-<BaseLayout title="Demo Gallery" description="A collection of interactive components and tools.">
-  <main class="section-container">
-    <div class="mb-12 text-center">
-      <h1 class="heading-1 mb-4 text-[var(--color-text)]">Demo 画廊</h1>
-      <p class="text-[var(--color-text-secondary)] max-w-2xl mx-auto text-lg">
-        这里展示了一些基于 React 19 和 Astro 5 构建的交互式组件和工具。体验流畅的交互与响应式设计。
+<BaseLayout title="Demo 画廊 · HANQIN // LAB" description="A collection of interactive components and tools by Hanqin.">
+  <main class="section-container pt-12 pb-24">
+    <div class="mb-16 text-center max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 glass-subtle text-xs font-mono text-amber-400 mb-4">
+        <span>HANQIN // EXPERIMENTAL REPOSITORY</span>
+      </div>
+      <h1 class="heading-section mb-4 text-white">交互原型与工具画廊</h1>
+      <p class="text-text-secondary text-sm sm:text-base leading-relaxed">
+        探索基于 React 19 与 Astro 5 构建的前端微交互组件、代码编辑沙盒与画布工具。
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {
         demos.map((demo) => (
           <DemoCard
             title={demo.title}
+            subtitle={demo.subtitle}
             description={demo.description}
-            href={`/demos/${demo.slug}`}
+            href={`/demos#${demo.slug}`}
             tags={demo.tags}
             icon={demo.icon}
+            status={demo.status}
           />
         ))
       }
