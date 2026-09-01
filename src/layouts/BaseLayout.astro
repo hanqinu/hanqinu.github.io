@@ -1,0 +1,37 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Navbar from '@/components/ui/Navbar.astro';
+import Footer from '@/components/ui/Footer.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Showcase', description = 'My personal portfolio and showcase' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+
+    <script is:inline>
+      (function () {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light') document.documentElement.classList.remove('dark');
+      })();
+    </script>
+
+    <ClientRouter />
+  </head>
+  <body>
+    <Navbar />
+    <slot />
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={`${title} | Demos`} description={description}>
+  <div class="section-container min-h-screen pt-32">
+    <header class="mb-12">
+      <a
+        href="/demos"
+        class="inline-block mb-6 text-[var(--color-primary)] hover:text-[var(--color-primary-light)] transition-colors"
+      >
+        &larr; 返回 Demos
+      </a>
+      <h1 class="heading-1 mb-4">{title}</h1>
+      <p class="text-[var(--color-text-secondary)] text-lg max-w-2xl">{description}</p>
+    </header>
+    <div class="bg-[var(--color-bg-secondary)] rounded-2xl p-6 border border-[var(--color-border)]">
+      <slot />
+    </div>
+  </div>
+</BaseLayout>

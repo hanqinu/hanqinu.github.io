@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DemoCard from '@/components/ui/DemoCard.astro';
+import { demos } from '@/data/demos';
+---
+
+<BaseLayout title="Demo Gallery" description="A collection of interactive components and tools.">
+  <main class="section-container">
+    <div class="mb-12 text-center">
+      <h1 class="heading-1 mb-4 text-[var(--color-text)]">Demo 画廊</h1>
+      <p class="text-[var(--color-text-secondary)] max-w-2xl mx-auto text-lg">
+        这里展示了一些基于 React 19 和 Astro 5 构建的交互式组件和工具。体验流畅的交互与响应式设计。
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        demos.map((demo) => (
+          <DemoCard
+            title={demo.title}
+            description={demo.description}
+            href={`/demos/${demo.slug}`}
+            tags={demo.tags}
+            icon={demo.icon}
+          />
+        ))
+      }
+    </div>
+  </main>
+</BaseLayout>

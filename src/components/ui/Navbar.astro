@@ -1,0 +1,37 @@
+---
+import ThemeToggle from '@/components/ui/ThemeToggle';
+
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/';
+const isDemos = currentPath.startsWith('/demos');
+---
+
+<nav class="fixed top-0 left-0 w-full z-50 glass h-16">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 h-full flex items-center justify-between">
+    <a
+      href="/"
+      class="text-xl font-bold text-gradient bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]"
+    >
+      Showcase
+    </a>
+
+    <div class="flex items-center gap-6">
+      <a
+        href="/"
+        class={`text-sm font-medium transition-colors hover:text-[var(--color-primary)] ${isHome ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]' : 'text-[var(--color-text-secondary)]'}`}
+      >
+        首页
+      </a>
+      <a
+        href="/demos"
+        class={`text-sm font-medium transition-colors hover:text-[var(--color-primary)] ${isDemos ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]' : 'text-[var(--color-text-secondary)]'}`}
+      >
+        Demos
+      </a>
+
+      <div class="w-px h-6 bg-[var(--color-border)] mx-2"></div>
+
+      <ThemeToggle client:load />
+    </div>
+  </div>
+</nav>
