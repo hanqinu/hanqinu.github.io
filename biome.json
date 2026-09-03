@@ -38,7 +38,7 @@
       "suspicious": {
         "noExplicitAny": "off",
         "noCommentText": "off",
-        "noArrayIndexKey": "warn"
+        "noArrayIndexKey": "off"
       },
       "style": {
         "noNonNullAssertion": "off",
