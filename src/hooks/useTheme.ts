@@ -1,26 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useLocalStorageState } from 'ahooks';
 
 export function useTheme() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useLocalStorageState<'dark' | 'light'>('theme', {
+    defaultValue: 'dark',
+  });
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
-    if (storedTheme === 'light') {
-      setTheme('light');
+    if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
     }
-  }, []);
+  }, [theme]);
 
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
-  return { theme, toggleTheme, isDark: theme === 'dark' };
+  return { theme: theme ?? 'dark', toggleTheme, isDark: theme !== 'light' };
 }

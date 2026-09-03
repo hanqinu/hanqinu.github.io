@@ -9,34 +9,42 @@
     "preview": "astro preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "astro check && tsc --noEmit"
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "typecheck": "astro check && tsc --noEmit",
+    "verify": "pnpm typecheck && pnpm lint && pnpm format:check",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "biome lint --write --no-errors-on-unmatched",
+      "prettier --write"
+    ],
+    "*.{astro,css,json,md,mjs}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
-    "astro": "^5.0.0",
     "@astrojs/react": "^4.0.0",
+    "ahooks": "^3.9.7",
+    "astro": "^5.0.0",
+    "clsx": "^2.1.1",
+    "matter-js": "^0.20.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@react-three/fiber": "^9.0.0",
-    "@react-three/drei": "^10.0.0",
-    "three": "^0.170.0",
-    "gsap": "^3.12.0",
-    "codemirror": "^6.0.0",
-    "@codemirror/state": "^6.5.0",
-    "@codemirror/view": "^6.36.0",
-    "@codemirror/lang-javascript": "^6.0.0",
-    "@codemirror/lang-html": "^6.0.0",
-    "@codemirror/lang-css": "^6.0.0",
-    "@codemirror/theme-one-dark": "^6.0.0"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "unocss": "^66.0.0",
-    "@unocss/astro": "^66.0.0",
-    "prettier": "^3.4.0",
-    "prettier-plugin-astro": "^0.14.1",
     "@astrojs/check": "^0.9.0",
-    "typescript": "^5.7.0",
+    "@biomejs/biome": "^2.5.11",
+    "@types/matter-js": "^0.20.2",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@types/three": "^0.170.0"
+    "@unocss/astro": "^66.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.4.1",
+    "prettier": "^3.4.0",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.7.0",
+    "unocss": "^66.0.0"
   }
 }

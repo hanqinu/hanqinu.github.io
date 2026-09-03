@@ -94,9 +94,11 @@ export default defineConfig({
   ],
   shortcuts: {
     'section-container': 'px-6 py-20 md:px-12 lg:px-20 max-w-7xl mx-auto',
-    'heading-hero': 'text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none',
+    'heading-hero':
+      'text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none',
     'heading-section': 'text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight',
     'heading-card': 'text-lg sm:text-xl font-bold tracking-tight',
-    'mono-tag': 'font-mono text-xs tracking-wider uppercase px-2.5 py-1 rounded border border-white/10 bg-white/5 text-white/70',
+    'mono-tag':
+      'font-mono text-xs tracking-wider uppercase px-2.5 py-1 rounded border border-white/10 bg-white/5 text-white/70',
   },
 });

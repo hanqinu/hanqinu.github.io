@@ -1,44 +1,27 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import type { RefCallback } from 'react';
+import { useInViewport } from 'ahooks';
+
+export { useInViewport };
 
 export interface IntersectionObserverOptions {
-  threshold?: number;
+  threshold?: number | number[];
   rootMargin?: string;
-  triggerOnce?: boolean;
 }
 
-export function useIntersectionObserver({
-  threshold = 0,
-  rootMargin = '0px',
-  triggerOnce = false,
-}: IntersectionObserverOptions = {}) {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<Element | null>(null);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-        if (entry.isIntersecting && triggerOnce) {
-          observer.unobserve(element);
-        }
-      },
-      { threshold, rootMargin },
-    );
-
-    observer.observe(element);
-
-    return () => {
-      if (element) observer.disconnect();
-    };
-  }, [threshold, rootMargin, triggerOnce]);
+export function useIntersectionObserver(options: IntersectionObserverOptions = {}) {
+  const elementRef = useRef<Element | null>(null);
+  const [inViewport] = useInViewport(elementRef, {
+    threshold: options.threshold,
+    rootMargin: options.rootMargin,
+  });
 
   const setRef = (node: Element | null) => {
-    ref.current = node;
+    elementRef.current = node;
   };
 
-  return { ref: setRef as RefCallback<Element>, isVisible };
+  return {
+    ref: setRef as RefCallback<Element>,
+    isVisible: !!inViewport,
+  };
 }

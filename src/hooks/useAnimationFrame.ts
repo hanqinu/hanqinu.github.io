@@ -1,13 +1,10 @@
 import { useEffect, useRef } from 'react';
+import { useLatest, useUnmount } from 'ahooks';
 
 export function useAnimationFrame(callback: (deltaTime: number) => void) {
   const requestRef = useRef<number | undefined>(undefined);
   const previousTimeRef = useRef<number | undefined>(undefined);
-  const callbackRef = useRef(callback);
-
-  useEffect(() => {
-    callbackRef.current = callback;
-  }, [callback]);
+  const callbackRef = useLatest(callback);
 
   useEffect(() => {
     const animate = (time: number) => {
@@ -27,4 +24,10 @@ export function useAnimationFrame(callback: (deltaTime: number) => void) {
       }
     };
   }, []);
+
+  useUnmount(() => {
+    if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current);
+    }
+  });
 }

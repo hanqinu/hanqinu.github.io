@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useEventListener } from 'ahooks';
 
-interface MousePosition {
+export interface MousePosition {
   x: number;
   y: number;
   normalizedX: number;
@@ -15,8 +16,9 @@ export function useMousePosition(): MousePosition {
     normalizedY: 0,
   });
 
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
+  useEventListener(
+    'mousemove',
+    (event: MouseEvent) => {
       const { clientX, clientY } = event;
       const { innerWidth, innerHeight } = window;
 
@@ -26,14 +28,9 @@ export function useMousePosition(): MousePosition {
         normalizedX: (clientX / innerWidth) * 2 - 1,
         normalizedY: -(clientY / innerHeight) * 2 + 1,
       });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
+    },
+    { target: () => window, passive: true },
+  );
 
   return position;
 }

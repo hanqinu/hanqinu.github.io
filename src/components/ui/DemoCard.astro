@@ -45,7 +45,9 @@ const statusClass =
 
     <!-- Title & Icon -->
     <div class="flex items-center gap-3.5 mb-4">
-      <div class="w-12 h-12 rounded-2xl bg-surface-100/90 border border-white/15 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-md">
+      <div
+        class="w-12 h-12 rounded-2xl bg-surface-100/90 border border-white/15 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-md"
+      >
         {icon}
       </div>
       <div>
@@ -63,17 +65,12 @@ const statusClass =
 
   <div class="pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-3">
     <div class="flex flex-wrap gap-1.5">
-      {
-        tags.map((tag) => (
-          <span class="mono-tag text-[10px]">
-            {tag}
-          </span>
-        ))
-      }
+      {tags.map((tag) => <span class="mono-tag text-[10px]">{tag}</span>)}
     </div>
-    <span class="text-xs font-mono text-amber-400 opacity-80 group-hover:translate-x-0.5 transition-transform">
+    <span
+      class="text-xs font-mono text-amber-400 opacity-80 group-hover:translate-x-0.5 transition-transform"
+    >
       待定接入 &rarr;
     </span>
   </div>
 </div>
-

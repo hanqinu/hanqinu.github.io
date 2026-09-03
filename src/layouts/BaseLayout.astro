@@ -7,13 +7,18 @@ import '@/styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  hideFooter?: boolean;
 }
 
-const { title = 'Showcase', description = 'My personal portfolio and showcase' } = Astro.props;
+const {
+  title = 'HANQIN — Creative Direction & Interactive Design Engineering',
+  description = 'Selected works, realtime shaders, 3D typography, and interactive digital experiences.',
+  hideFooter = false,
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="zh-CN" class="dark">
+<html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -40,6 +45,6 @@ const { title = 'Showcase', description = 'My personal portfolio and showcase' }
   <body>
     <Navbar />
     <slot />
-    <Footer />
+    {!hideFooter && <Footer />}
   </body>
 </html>

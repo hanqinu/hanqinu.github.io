@@ -1,27 +1,30 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CursorSpotlight from '@/components/landing/CursorSpotlight';
-import HeroInteractive from '@/components/landing/HeroInteractive';
-import InteractiveBento from '@/components/landing/InteractiveBento';
-import DemoShowcase from '@/components/landing/DemoShowcase';
-import TelemetrySection from '@/components/landing/TelemetrySection';
+import HeroZoomSection from '@/components/landing/HeroZoomSection';
+import ChromaticTextSection from '@/components/landing/ChromaticTextSection';
+import ScrollCardFlipSection from '@/components/landing/ScrollCardFlipSection';
+import ParticleWaveSection from '@/components/landing/ParticleWaveSection';
 ---
 
-<BaseLayout title="HANQIN // LAB · Creative Design Engineering" description="Personal interactive design engineering portfolio and micro-interactions laboratory by Hanqin.">
+<BaseLayout
+  title="HANQIN — Creative Direction & Interactive Design Engineering"
+  description="Selected works, realtime shaders, 3D typography, and interactive digital experiences."
+  hideFooter={true}
+>
   <CursorSpotlight client:load />
 
-  <main class="w-full overflow-hidden">
-    <!-- 2D Kinetic Hero with Live Interactive Design Dock -->
-    <HeroInteractive client:load />
+  <main class="w-full overflow-x-hidden">
+    <!-- SCREEN 1: HANQIN Background Zoom & Side Doodles Explode -->
+    <HeroZoomSection client:load />
 
-    <!-- 5 Interactive Bento Experiments -->
-    <InteractiveBento client:visible />
+    <!-- SCREEN 2: Chromatic Fluid Sheen Typography (Realistic Rainbow Dispersion & Clean Lines) -->
+    <ChromaticTextSection client:visible />
 
-    <!-- Demos Gallery with In-Card Playgrounds -->
-    <DemoShowcase client:visible />
+    <!-- SCREEN 3: 3D Curved Ribbon Poker Card Flip (Scroll pinned to 100% complete front face) -->
+    <ScrollCardFlipSection client:visible />
 
-    <!-- Architecture Telemetry & Kinetic Infinite Marquee -->
-    <TelemetrySection client:visible />
+    <!-- SCREEN 4: Geometric Particle Ocean Wave ("Let's work together!") -->
+    <ParticleWaveSection client:visible />
   </main>
 </BaseLayout>
-
