@@ -1,7 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { useBoolean, useEventListener } from 'ahooks';
 import { useMousePosition } from '@/hooks/useMousePosition';
-import { soundEngine } from '@/utils/audio';
 
 interface Particle {
   x: number;
@@ -59,8 +58,6 @@ export default function CursorSpotlight() {
 
     const colors = ['#ff5e00', '#06b6d4', '#ec4899', '#facc15', '#a3e635'];
     const chosenColor = colors[Math.floor(Math.random() * colors.length)];
-
-    soundEngine.playPop(720);
 
     shockwaves.current.push({
       x: e.clientX,

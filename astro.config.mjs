@@ -8,4 +8,9 @@ export default defineConfig({
   devToolbar: { enabled: false },
   server: { port: 4321, host: true },
   integrations: [react(), uno()],
+  vite: {
+    optimizeDeps: {
+      include: ['matter-js'],
+    },
+  },
 });

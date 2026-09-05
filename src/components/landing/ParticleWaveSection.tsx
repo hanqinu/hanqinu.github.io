@@ -1,6 +1,5 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import Matter from 'matter-js';
-import { soundEngine } from '@/utils/audio';
 
 type ParticleShape = '+' | 'x' | 'o' | 'tri' | 'sq' | 'diamond' | 'dot';
 
@@ -28,8 +27,6 @@ export default function ParticleWaveSection() {
     active: false,
   });
 
-  const lastSoundTime = useRef(0);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -44,7 +41,6 @@ export default function ParticleWaveSection() {
 
     const { Engine, World, Bodies, Body } = Matter;
 
-    // Create Matter.js physics engine with sleep enabled for rock-solid stability
     const engine = Engine.create({
       enableSleeping: true,
       gravity: { x: 0, y: 0.9, scale: 0.001 },
@@ -58,8 +54,10 @@ export default function ParticleWaveSection() {
 
     const initSimulation = () => {
       const rect = container.getBoundingClientRect();
-      width = rect.width;
-      height = Math.max(rect.height, 700);
+      const winW = typeof window !== 'undefined' ? window.innerWidth : 1440;
+      const winH = typeof window !== 'undefined' ? window.innerHeight : 800;
+      width = rect.width > 0 ? rect.width : winW;
+      height = Math.max(rect.height > 0 ? rect.height : winH, 700);
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(width * dpr);
@@ -73,7 +71,7 @@ export default function ParticleWaveSection() {
       World.clear(engine.world, false);
       bodiesRef.current = [];
 
-      // 4-Sided Solid Boundaries strictly enclosing Screen 4 (Cannot escape Screen 4!)
+      // 4-Sided Solid Boundaries strictly enclosing Screen 4
       const wallThickness = 120;
       ground = Bodies.rectangle(
         width / 2,
@@ -85,11 +83,10 @@ export default function ParticleWaveSection() {
           friction: 0.95,
         },
       );
-      // Solid top ceiling
       ceiling = Bodies.rectangle(width / 2, -wallThickness / 2 + 10, width * 2, wallThickness, {
         isStatic: true,
         friction: 0.4,
-        restitution: 0.4, // Bounces downward on ceiling contact
+        restitution: 0.4,
       });
       leftWall = Bodies.rectangle(-wallThickness / 2 + 10, height / 2, wallThickness, height * 2, {
         isStatic: true,
@@ -108,9 +105,8 @@ export default function ParticleWaveSection() {
 
       World.add(engine.world, [ground, ceiling, leftWall, rightWall]);
 
-      // Initialize rigid particle sand bed across lower half (denser, richer distribution)
       const shapes: ParticleShape[] = ['+', 'x', 'o', 'tri', 'sq', 'diamond', 'dot'];
-      const step = 23; // Denser spacing for significantly more particles
+      const step = 23;
       const cols = Math.ceil(width / step);
       const rows = Math.ceil(height / step);
       const newBodies: Matter.Body[] = [];
@@ -120,7 +116,6 @@ export default function ParticleWaveSection() {
           const normX = c / cols;
           const normY = r / rows;
 
-          // Initial beach dune slope with slightly higher coverage for a lush particle sea
           const duneTop = 0.54 - normX * 0.16 + Math.sin(normX * Math.PI * 1.8) * 0.04;
 
           if (normY >= duneTop) {
@@ -130,18 +125,16 @@ export default function ParticleWaveSection() {
             const py = Math.min(height - 24, r * step + jitterY);
 
             const shape = shapes[Math.floor(Math.random() * shapes.length)];
-            // Sized to maintain visual clarity while fitting densely: dot 5.2px, shapes 8.8px
             const radius = shape === 'dot' ? 5.2 : 8.8;
 
             const b = Bodies.circle(px, py, radius, {
-              friction: 0.62, // Responsive rolling and sliding
-              frictionAir: 0.03, // Light air resistance so particles travel nicely
-              restitution: 0.12, // Slight bounce
-              density: 0.0008, // Agile mass for responsive movement
-              sleepThreshold: 25, // Quick sleeping for optimal rendering performance
+              friction: 0.62,
+              frictionAir: 0.03,
+              restitution: 0.12,
+              density: 0.0008,
+              sleepThreshold: 25,
             });
 
-            // Attach rendering metadata
             (b as unknown as { customData: CustomPluginData }).customData = {
               shape,
               size: radius,
@@ -160,7 +153,6 @@ export default function ParticleWaveSection() {
     initSimulation();
     window.addEventListener('resize', initSimulation);
 
-    // Mouse velocity & dragging tracking
     const onMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       const mx = e.clientX - rect.left;
@@ -186,12 +178,6 @@ export default function ParticleWaveSection() {
         speed: spd * scale,
         active: true,
       };
-
-      const now = performance.now();
-      if (spd > 260 && now - lastSoundTime.current > 180) {
-        soundEngine.playBoing();
-        lastSoundTime.current = now;
-      }
     };
 
     const onMouseEnter = () => {
@@ -212,9 +198,6 @@ export default function ParticleWaveSection() {
       const mx = e.clientX - rect.left;
       const my = e.clientY - rect.top;
 
-      soundEngine.playLaser(780);
-
-      // Shockwave surge on click (gentler, controlled blast)
       const bodies = bodiesRef.current;
       const blastRadius = 190;
       const blastRadiusSq = blastRadius * blastRadius;
@@ -244,9 +227,6 @@ export default function ParticleWaveSection() {
     container.addEventListener('mouseleave', onMouseLeave);
     container.addEventListener('click', onClick);
 
-    // =========================================================================
-    // Matter.js Real Rigid Body Physical Loop with Top Ceiling Force & Screen Clamping
-    // =========================================================================
     const render = () => {
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
@@ -257,22 +237,18 @@ export default function ParticleWaveSection() {
       const mvy = mouse.current.vy;
       const mSpeed = mouse.current.speed;
 
-      // Active when moving (threshold lowered to 0.8 so normal mouse movements trigger responsive ripples)
       const isDraggingMotion = mouse.current.active && mSpeed >= 0.8;
 
       const normVx = isDraggingMotion ? mvx / mSpeed : 0;
       const normVy = isDraggingMotion ? mvy / mSpeed : 0;
 
-      // Dynamic wave radius with slightly broader reactive wake
       const dynamicWaveRadius = Math.min(260, Math.max(80, 80 + mSpeed * 4.2));
       const dynamicWaveRadiusSq = dynamicWaveRadius * dynamicWaveRadius;
-      // Increased thrust: noticeably punchier and reactive, capped comfortably to prevent screen-escape
       const wavePower = Math.min(0.0105, 0.0016 + mSpeed * 0.00025);
 
       const bodies = bodiesRef.current;
       const bLen = bodies.length;
 
-      // 1. Apply wave forces while dragging
       if (isDraggingMotion) {
         for (let i = 0; i < bLen; i++) {
           const b = bodies[i];
@@ -285,12 +261,11 @@ export default function ParticleWaveSection() {
             const falloff = Math.cos((dist / dynamicWaveRadius) * (Math.PI * 0.5));
             const force = falloff * wavePower;
 
-            // Wake body up from sleep
             Matter.Sleeping.set(b, false);
 
             Body.applyForce(b, b.position, {
               x: (normVx * 0.72 + (dx / dist) * 0.28) * force,
-              y: (normVy * 0.45 - 0.42) * force, // Lively upward scoop for visible wave splashes
+              y: (normVy * 0.45 - 0.42) * force,
             });
 
             Body.setAngularVelocity(b, b.angularVelocity + (Math.random() - 0.5) * 0.04 * falloff);
@@ -298,53 +273,37 @@ export default function ParticleWaveSection() {
         }
       }
 
-      // 2. Step Matter.js Physics Engine
       Engine.update(engine, 1000 / 60);
 
-      // -----------------------------------------------------------------------
-      // 3. Boundary Restriction & Top Ceiling Downward Force
-      // "粒子只在当前屏移动，不要一下推出第四屏的范围了，触碰到上顶部时应该会有个向下的力"
-      // -----------------------------------------------------------------------
       for (let i = 0; i < bLen; i++) {
         const b = bodies[i];
 
-        // TOP CEILING: When particles reach near top (y <= 38px), apply downward force and rebound downward
         if (b.position.y <= 38) {
           Matter.Sleeping.set(b, false);
-
-          // Apply strong downward force
           Body.applyForce(b, b.position, { x: 0, y: 0.006 });
-
-          // If still moving upward, rebound with downward velocity
           if (b.velocity.y < 0) {
             Body.setVelocity(b, {
               x: b.velocity.x * 0.85,
               y: Math.max(2.8, Math.abs(b.velocity.y) * 0.65),
             });
           }
-
-          // Hard lock at top so it never escapes Screen 4
           if (b.position.y < 14) {
             Body.setPosition(b, { x: b.position.x, y: 14 });
           }
         }
 
-        // LEFT WALL CLAMP
         if (b.position.x < 14) {
           Body.setPosition(b, { x: 14, y: b.position.y });
           if (b.velocity.x < 0) {
             Body.setVelocity(b, { x: Math.abs(b.velocity.x) * 0.5, y: b.velocity.y });
           }
-        }
-        // RIGHT WALL CLAMP
-        else if (b.position.x > width - 14) {
+        } else if (b.position.x > width - 14) {
           Body.setPosition(b, { x: width - 14, y: b.position.y });
           if (b.velocity.x > 0) {
             Body.setVelocity(b, { x: -Math.abs(b.velocity.x) * 0.5, y: b.velocity.y });
           }
         }
 
-        // BOTTOM GROUND CLAMP
         if (b.position.y > height - 16) {
           Body.setPosition(b, { x: b.position.x, y: height - 16 });
           if (b.velocity.y > 0) {
@@ -353,7 +312,6 @@ export default function ParticleWaveSection() {
         }
       }
 
-      // 4. Render Non-Overlapping Rigid Bodies
       ctx.fillStyle = '#ffffff';
       ctx.strokeStyle = '#ffffff';
 
@@ -423,7 +381,6 @@ export default function ParticleWaveSection() {
             ctx.stroke();
             break;
 
-          case 'dot':
           default:
             ctx.beginPath();
             ctx.arc(0, 0, s * 0.6, 0, Math.PI * 2);
@@ -434,7 +391,6 @@ export default function ParticleWaveSection() {
         ctx.restore();
       }
 
-      // Mouse speed decay
       mouse.current.vx *= 0.8;
       mouse.current.vy *= 0.8;
       mouse.current.speed *= 0.8;
@@ -464,13 +420,11 @@ export default function ParticleWaveSection() {
       id="screen-4-particles"
       className="relative w-full h-[100vh] min-h-[700px] select-none overflow-hidden text-white flex flex-col justify-center items-center cursor-crosshair z-40"
       style={{
-        backgroundColor: '#000000', // Pure pitch black
+        backgroundColor: '#000000',
       }}
     >
-      {/* Strictly Enclosed Matter.js Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
-      {/* Floating Center Minimal Info - Exactly in center, leaving bottom 100% open for complete wave */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 flex flex-col items-center gap-2.5 text-center select-none">
         <div className="flex items-center gap-2 text-[11px] font-mono tracking-[0.3em] text-white/40 uppercase">
           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />

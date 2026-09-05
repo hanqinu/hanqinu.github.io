@@ -14,17 +14,17 @@ import ParticleWaveSection from '@/components/landing/ParticleWaveSection';
 >
   <CursorSpotlight client:load />
 
-  <main class="w-full overflow-x-hidden">
+  <main class="w-full [overflow-x:clip] bg-black">
     <!-- SCREEN 1: HANQIN Background Zoom & Side Doodles Explode -->
     <HeroZoomSection client:load />
 
     <!-- SCREEN 2: Chromatic Fluid Sheen Typography (Realistic Rainbow Dispersion & Clean Lines) -->
     <ChromaticTextSection client:visible />
 
-    <!-- SCREEN 3: 3D Curved Ribbon Poker Card Flip (Scroll pinned to 100% complete front face) -->
-    <ScrollCardFlipSection client:visible />
+    <!-- SCREEN 3: 3D Interactive Poker Card Spread & Flip (Smooth Wheel, Scroll & Click) -->
+    <ScrollCardFlipSection client:load />
 
     <!-- SCREEN 4: Geometric Particle Ocean Wave ("Let's work together!") -->
-    <ParticleWaveSection client:visible />
+    <ParticleWaveSection client:load />
   </main>
 </BaseLayout>

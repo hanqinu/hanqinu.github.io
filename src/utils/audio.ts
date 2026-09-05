@@ -3,7 +3,7 @@
 
 class SoundEngine {
   private ctx: AudioContext | null = null;
-  public enabled: boolean = true;
+  public enabled: boolean = false;
 
   private initCtx() {
     if (!this.ctx && typeof window !== 'undefined') {
@@ -19,8 +19,8 @@ class SoundEngine {
     }
   }
 
-  public setEnabled(enabled: boolean) {
-    this.enabled = enabled;
+  public setEnabled(_enabled: boolean) {
+    this.enabled = false;
   }
 
   // Play a musical note with given frequency

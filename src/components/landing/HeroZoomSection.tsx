@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useEventListener } from 'ahooks';
 import { useMousePosition } from '@/hooks/useMousePosition';
-import { soundEngine } from '@/utils/audio';
 import {
   SkaterSilhouette,
   CyberCatSilhouette,
@@ -67,17 +66,6 @@ export default function HeroZoomSection() {
         backgroundColor: '#000000',
       }}
     >
-      {/* Dynamic Background Glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[600px] rounded-full pointer-events-none blur-[180px] opacity-20 -z-10"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.12), transparent 70%)',
-          transform: `translate(-50%, -50%) scale(${1 + scrollProgress * 1.5})`,
-          opacity: textOpacity * 0.35,
-        }}
-      />
-
       {/* ========================================================================= */}
       {/* 1. LEFT FLANK DOODLES & SILHOUETTES (Flies out left on scroll) */}
       {/* ========================================================================= */}
@@ -91,7 +79,6 @@ export default function HeroZoomSection() {
       >
         {/* DJ Cyber Cat */}
         <div
-          onClick={() => soundEngine.playBurst()}
           className="relative cursor-pointer group hover:scale-110 transition-transform"
           title="Cyber Cat Silhouette"
         >
@@ -128,7 +115,6 @@ export default function HeroZoomSection() {
       >
         {/* Leaping Skater Silhouette */}
         <div
-          onClick={() => soundEngine.playLaser(880)}
           className="relative cursor-pointer group hover:scale-110 transition-transform"
           title="Skater Silhouette"
         >
@@ -142,10 +128,7 @@ export default function HeroZoomSection() {
         </div>
 
         {/* Spray Can Tag */}
-        <div
-          onClick={() => soundEngine.playLaser(1100)}
-          className="relative cursor-pointer group hover:scale-110 transition-transform hidden sm:block"
-        >
+        <div className="relative cursor-pointer group hover:scale-110 transition-transform hidden sm:block">
           <SprayCanDoodle
             className="w-20 h-20 sm:w-24 sm:h-24 text-white/90 group-hover:text-lime-400 transition-colors drop-shadow-xl"
             color="#a3e635"
