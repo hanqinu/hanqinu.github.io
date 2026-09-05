@@ -1,7 +1,17 @@
 import { useRef, useEffect, useState } from 'react';
 import WebGLFluid from 'webgl-fluid';
 
-export default function ChromaticTextSection() {
+export interface ChromaticTextSectionProps {
+  opacity?: number;
+  isInteractive?: boolean;
+  className?: string;
+}
+
+export default function ChromaticTextSection({
+  opacity = 1,
+  isInteractive = true,
+  className = '',
+}: ChromaticTextSectionProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInteracted, setIsInteracted] = useState(false);
@@ -54,27 +64,48 @@ export default function ChromaticTextSection() {
     }
   };
 
+  const isVisible = opacity > 0;
+
   return (
-    <section
+    <div
       id="screen-2-chromatic"
       ref={containerRef}
       onPointerEnter={handlePointerEnter}
-      className="relative w-full h-[100vh] min-h-[700px] flex flex-col items-center justify-center select-none overflow-hidden cursor-crosshair z-20 bg-black"
+      className={`w-full h-full flex flex-col items-center justify-center select-none overflow-hidden cursor-crosshair ${className}`}
       style={{
         backgroundColor: '#000000',
+        opacity,
+        pointerEvents: isInteractive && opacity > 0.4 ? 'auto' : 'none',
+        visibility: isVisible ? 'visible' : 'hidden',
+        transition: 'opacity 0.12s ease-out',
       }}
     >
       {/* Geek Corner Markers */}
-      <div className="absolute top-8 left-8 text-[11px] font-mono tracking-widest text-white/30 pointer-events-none flex items-center gap-2">
+      <div
+        style={{
+          opacity: Math.min(1, opacity * 1.2),
+        }}
+        className="absolute top-8 left-8 text-[11px] font-mono tracking-widest text-white/30 pointer-events-none flex items-center gap-2"
+      >
         <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent-cobaltLight animate-pulse" />
         <span>[ 02 / FLUID DYNAMICS SHEEN ]</span>
       </div>
 
-      <div className="absolute top-8 right-8 text-[11px] font-mono tracking-widest text-white/30 pointer-events-none hidden sm:block">
+      <div
+        style={{
+          opacity: Math.min(1, opacity * 1.2),
+        }}
+        className="absolute top-8 right-8 text-[11px] font-mono tracking-widest text-white/30 pointer-events-none hidden sm:block"
+      >
         <span>NAVIER-STOKES · 60FPS</span>
       </div>
 
-      <div className="absolute bottom-8 left-8 text-[11px] font-mono tracking-widest text-white/20 pointer-events-none hidden md:block">
+      <div
+        style={{
+          opacity: Math.min(1, opacity * 1.2),
+        }}
+        className="absolute bottom-8 left-8 text-[11px] font-mono tracking-widest text-white/20 pointer-events-none hidden md:block"
+      >
         <span>SPEC: 38 CURL · 0.08 SPLAT · OUTLINE CAVITY CONFINEMENT</span>
       </div>
 
@@ -171,12 +202,17 @@ export default function ChromaticTextSection() {
       {/* 3. Minimalist Interactive Hover Prompt                                     */}
       {/* ========================================================================= */}
       {!isInteracted && (
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 pointer-events-none animate-pulse z-30">
+        <div
+          style={{
+            opacity: Math.min(1, opacity * 1.2),
+          }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 pointer-events-none animate-pulse z-30 transition-opacity"
+        >
           <span className="px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-[11px] font-mono tracking-widest text-white/60 shadow-2xl">
             [ SWEEP CURSOR ACROSS HANQIN ]
           </span>
         </div>
       )}
-    </section>
+    </div>
   );
 }

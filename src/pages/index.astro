@@ -2,7 +2,6 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CursorSpotlight from '@/components/landing/CursorSpotlight';
 import HeroZoomSection from '@/components/landing/HeroZoomSection';
-import ChromaticTextSection from '@/components/landing/ChromaticTextSection';
 import ScrollCardFlipSection from '@/components/landing/ScrollCardFlipSection';
 import ParticleWaveSection from '@/components/landing/ParticleWaveSection';
 ---
@@ -15,11 +14,8 @@ import ParticleWaveSection from '@/components/landing/ParticleWaveSection';
   <CursorSpotlight client:load />
 
   <main class="w-full [overflow-x:clip] bg-black">
-    <!-- SCREEN 1: HANQIN Background Zoom & Side Doodles Explode -->
+    <!-- SCREEN 1 & 2: HANQIN Monumental Zoom & In-Place Chromatic Fluid Sheen Reveal -->
     <HeroZoomSection client:load />
-
-    <!-- SCREEN 2: Chromatic Fluid Sheen Typography (Realistic Rainbow Dispersion & Clean Lines) -->
-    <ChromaticTextSection client:visible />
 
     <!-- SCREEN 3: 3D Interactive Poker Card Spread & Flip (Smooth Wheel, Scroll & Click) -->
     <ScrollCardFlipSection client:load />

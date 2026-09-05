@@ -16,9 +16,9 @@ const CARDS_DATA: CardData[] = [
     id: 'strategy',
     title: 'STRATEGY',
     num: '01',
-    fanZ: -12,
-    fanX: -36,
-    fanY: 18,
+    fanZ: -9,
+    fanX: -18,
+    fanY: 12,
     items: [
       'Digital Experience Strategy',
       'Technology Architecture',
@@ -39,9 +39,9 @@ const CARDS_DATA: CardData[] = [
     id: 'creative',
     title: 'CREATIVE',
     num: '02',
-    fanZ: -4,
-    fanX: -12,
-    fanY: 5,
+    fanZ: -3,
+    fanX: -6,
+    fanY: 3,
     items: [
       'Art Direction & Typography',
       'Design Systems & Tokens',
@@ -66,9 +66,9 @@ const CARDS_DATA: CardData[] = [
     id: 'technology',
     title: 'TECHNOLOGY',
     num: '03',
-    fanZ: 4,
-    fanX: 12,
-    fanY: 5,
+    fanZ: 3,
+    fanX: 6,
+    fanY: 3,
     items: [
       'WebGL & Three.js Realtime',
       'Custom GLSL Shaders',
@@ -88,9 +88,9 @@ const CARDS_DATA: CardData[] = [
     id: 'production',
     title: 'PRODUCTION',
     num: '04',
-    fanZ: 12,
-    fanX: 36,
-    fanY: 18,
+    fanZ: 9,
+    fanX: 18,
+    fanY: 12,
     items: [
       'High-Fidelity Prototyping',
       'Precision Performance Audits',
@@ -357,29 +357,6 @@ export default function ScrollCardFlipSection() {
           backgroundColor: '#000000',
         }}
       >
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <svg
-            viewBox="0 0 1440 700"
-            className="w-full h-full object-cover"
-            fill="none"
-            preserveAspectRatio="none"
-          >
-            <title>Cards Trajectory Arc</title>
-            <path
-              d="M -100 520 C 350 560, 650 140, 1150 260 C 1350 310, 1550 200, 1680 140"
-              stroke="rgba(255,255,255,0.08)"
-              strokeWidth="24"
-              strokeLinecap="round"
-            />
-            <path
-              d="M -100 520 C 350 560, 650 140, 1150 260 C 1350 310, 1550 200, 1680 140"
-              stroke="rgba(255,255,255,0.5)"
-              strokeWidth="6"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-
         <div className="text-center relative z-10 pt-2 flex flex-col items-center">
           <div className="inline-flex items-center gap-2 text-xs font-mono text-white/50 uppercase tracking-[0.3em] mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
@@ -413,8 +390,9 @@ export default function ScrollCardFlipSection() {
               const rotateZ = (1 - p) * card.fanZ;
 
               const clusterPull = 1 - p;
-              const handClusterX = (idx - 1.5) * -130 * clusterPull + card.fanX * clusterPull;
-              const handClusterY = card.fanY * clusterPull + clusterPull * 38;
+              // Tighter compact deck: pull cards strongly to center when p is low
+              const handClusterX = (idx - 1.5) * -210 * clusterPull + card.fanX * clusterPull;
+              const handClusterY = card.fanY * clusterPull + clusterPull * 28;
               const translateZ = Math.sin(p * Math.PI) * 40;
 
               return (
@@ -426,6 +404,7 @@ export default function ScrollCardFlipSection() {
                     transformOrigin: 'bottom center',
                     transformStyle: 'preserve-3d',
                     transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
+                    zIndex: idx,
                   }}
                   className="relative w-full h-[340px] sm:h-[370px] lg:h-[390px] rounded-3xl group shadow-[0_25px_60px_-10px_rgba(0,0,0,0.8)] cursor-pointer hover:-translate-y-1.5 transition-all"
                   title="Click to toggle flip"
