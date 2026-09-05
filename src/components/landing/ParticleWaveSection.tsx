@@ -16,6 +16,10 @@ export default function ParticleWaveSection() {
   const engineRef = useRef<Matter.Engine | null>(null);
   const bodiesRef = useRef<Matter.Body[]>([]);
 
+  // Entrance wave animation refs (in-memory only, no browser storage used)
+  const hasTriggeredEntrance = useRef(false);
+  const waveStartTime = useRef<number | null>(null);
+
   const mouse = useRef({
     x: -2000,
     y: -2000,
@@ -90,7 +94,8 @@ export default function ParticleWaveSection() {
       });
       leftWall = Bodies.rectangle(-wallThickness / 2 + 10, height / 2, wallThickness, height * 2, {
         isStatic: true,
-        friction: 0.5,
+        friction: 0.15,
+        restitution: 0.75,
       });
       rightWall = Bodies.rectangle(
         width + wallThickness / 2 - 10,
@@ -99,7 +104,8 @@ export default function ParticleWaveSection() {
         height * 2,
         {
           isStatic: true,
-          friction: 0.5,
+          friction: 0.15,
+          restitution: 0.75,
         },
       );
 
@@ -227,6 +233,23 @@ export default function ParticleWaveSection() {
     container.addEventListener('mouseleave', onMouseLeave);
     container.addEventListener('click', onClick);
 
+    // Trigger dual-side wave surge when Screen 4 enters the viewport for the first time
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !hasTriggeredEntrance.current) {
+            hasTriggeredEntrance.current = true;
+            waveStartTime.current = performance.now();
+          }
+        }
+      },
+      {
+        threshold: 0.2,
+      },
+    );
+
+    observer.observe(container);
+
     const render = () => {
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
@@ -248,6 +271,61 @@ export default function ParticleWaveSection() {
 
       const bodies = bodiesRef.current;
       const bLen = bodies.length;
+
+      // Dual-Side Flank Wave Entrance Surge:
+      // Only outer flank particles (outer ~16% on left and right) are launched outwards & upwards.
+      // They hit the side walls, ricochet off, and arc gracefully toward the center and down.
+      if (waveStartTime.current !== null) {
+        const elapsed = performance.now() - waveStartTime.current;
+        const waveDuration = 2400; // 2.4s total for launch, wall impact, central arc, and graceful settle
+        const progress = elapsed / waveDuration;
+
+        if (progress < 1) {
+          // Launch impulse phase runs during the first ~32% (approx 750ms)
+          if (progress < 0.32) {
+            const launchPhase = progress / 0.32; // 0 to 1
+            const surge = Math.sin(launchPhase * Math.PI);
+
+            for (let i = 0; i < bLen; i++) {
+              const b = bodies[i];
+              const px = b.position.x;
+              const py = b.position.y;
+              const normX = px / width;
+              const normY = py / height;
+
+              // Only select particles in the two outer flanks (outer 16%), preserving the dune bottom
+              const isLeftFlank = normX < 0.16;
+              const isRightFlank = normX > 0.84;
+
+              if ((isLeftFlank || isRightFlank) && normY < 0.88) {
+                // If particle already bounced inward off the wall, stop pushing outward
+                if (isLeftFlank && b.velocity.x > 0.5) continue;
+                if (isRightFlank && b.velocity.x < -0.5) continue;
+
+                Matter.Sleeping.set(b, false);
+
+                const isLeft = isLeftFlank;
+                // Target point outside the corresponding side wall, slightly above mid-height
+                const targetX = isLeft ? -width * 0.08 : width * 1.08;
+                const targetY = height * 0.16;
+                const dx = targetX - px;
+                const dy = targetY - py;
+                const dist = Math.max(10, Math.sqrt(dx * dx + dy * dy));
+
+                // Force outwards against the side walls & upwards
+                const forceMag = surge * 0.0032;
+                const fx = (dx / dist) * forceMag * 1.35;
+                const fy = (dy / dist) * forceMag * 1.6;
+
+                Body.applyForce(b, b.position, { x: fx, y: fy });
+                Body.setAngularVelocity(b, b.angularVelocity + (isLeft ? 0.018 : -0.018) * surge);
+              }
+            }
+          }
+        } else {
+          waveStartTime.current = null;
+        }
+      }
 
       if (isDraggingMotion) {
         for (let i = 0; i < bLen; i++) {
@@ -295,12 +373,12 @@ export default function ParticleWaveSection() {
         if (b.position.x < 14) {
           Body.setPosition(b, { x: 14, y: b.position.y });
           if (b.velocity.x < 0) {
-            Body.setVelocity(b, { x: Math.abs(b.velocity.x) * 0.5, y: b.velocity.y });
+            Body.setVelocity(b, { x: Math.abs(b.velocity.x) * 0.75, y: b.velocity.y * 0.88 });
           }
         } else if (b.position.x > width - 14) {
           Body.setPosition(b, { x: width - 14, y: b.position.y });
           if (b.velocity.x > 0) {
-            Body.setVelocity(b, { x: -Math.abs(b.velocity.x) * 0.5, y: b.velocity.y });
+            Body.setVelocity(b, { x: -Math.abs(b.velocity.x) * 0.75, y: b.velocity.y * 0.88 });
           }
         }
 
@@ -404,6 +482,7 @@ export default function ParticleWaveSection() {
     animId = requestAnimationFrame(render);
 
     return () => {
+      observer.disconnect();
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', initSimulation);
       container.removeEventListener('mousemove', onMouseMove);

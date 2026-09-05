@@ -393,18 +393,22 @@ export default function ScrollCardFlipSection() {
               // Tighter compact deck: pull cards strongly to center when p is low
               const handClusterX = (idx - 1.5) * -210 * clusterPull + card.fanX * clusterPull;
               const handClusterY = card.fanY * clusterPull + clusterPull * 28;
-              const translateZ = Math.sin(p * Math.PI) * 40;
+              // Consistent 3D layer depth: Card 01 (Strategy) stays cleanly on top from p=0 to p=1
+              const stackZ = (3 - idx) * 8 * clusterPull;
+              const totalZ =
+                Math.sin(p * Math.PI) * 40 + stackZ + (manualFlipped[card.id] ? 50 : 0);
+              const cardZIndex = manualFlipped[card.id] ? 50 : 10 - idx;
 
               return (
                 <div
                   key={card.id}
                   onClick={() => handleCardClick(card.id)}
                   style={{
-                    transform: `translate3d(${handClusterX}px, ${handClusterY}px, ${translateZ}px) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`,
+                    transform: `translate3d(${handClusterX}px, ${handClusterY}px, ${totalZ}px) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`,
                     transformOrigin: 'bottom center',
                     transformStyle: 'preserve-3d',
                     transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
-                    zIndex: idx,
+                    zIndex: cardZIndex,
                   }}
                   className="relative w-full h-[340px] sm:h-[370px] lg:h-[390px] rounded-3xl group shadow-[0_25px_60px_-10px_rgba(0,0,0,0.8)] cursor-pointer hover:-translate-y-1.5 transition-all"
                   title="Click to toggle flip"
